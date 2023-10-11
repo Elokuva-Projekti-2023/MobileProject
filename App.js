@@ -1,60 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import Popup from './components/Popup.js';
-import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import { StyleSheet } from 'react-native';
+import Home from './components/Home';
+import Favourites from './components/Favourites';
+import AboutToWatch from './components/AboutToWatch';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-
-  const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-
-  useEffect(() => {
-    fetch(process.env.EXPO_PUBLIC_API_URL + process.env.EXPO_PUBLIC_API_KEY)
-    .then(response => response.json())
-    .then(data => {
-      //rajoittaa elokuvien määrän 18
-      const limitedMovies = data.results.slice(0, 18);
-        setMovies(limitedMovies);
-      })
-    .catch( err => console.error(err))
-    }, []);
-
-     // Funktio avaa popup-ikkunan valitulle elokuvalle
-  const openPopup = (movie) => {
-    setSelectedMovie(movie);
-  };
-
-  // Funktio sulkee popup-ikkunan
-  const closePopup = () => {
-    setSelectedMovie(null);
-  };
-
+    
   return (
-    <View style={styles.container}>
-      <FlatList
-          data={movies}
-          keyExtractor={item => item.id}
-          numColumns={3} 
-          contentContainerStyle={styles.flatListContainer}
-          renderItem={({item}) =>  
-          <View key={item.id} style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => openPopup(item)}>
-            <Image style={styles.image}source={{ uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}}/>
-            <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
-              {item.original_title !== item.title
-              ? `${item.original_title} (${item.title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
-              : item.original_title}
-              </Text> 
-            </TouchableOpacity>
-          </View>
-        }
-        />     
-        {selectedMovie && (
-        <Popup visible={true} movie={selectedMovie} onClose={closePopup} />
-      )} 
-      <StatusBar style="auto" />
-    </View>
-  );
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = 'md-home';
+            } else if (route.name === 'Favourites') {
+              iconName = 'heart';
+            } else if (route.name === 'AboutToWatch') {
+              iconName = 'film'
+            }
+
+            return <Ionicons name={ iconName } size={ size } color={ color } />;
+          },
+        })
+      }>
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Favourites" component={Favourites} />
+        <Tab.Screen name="AboutToWatch" component={AboutToWatch} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  )
 }
 
 const styles = StyleSheet.create({

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
+export default function AboutToWatch() {
   return (
     <View style={styles.container}>
       <Text>Tämä on sivu johon tallennetaan "Aion katsoa lista"</Text>
