@@ -7,6 +7,7 @@ import Favourites from './components/Favourites';
 import AboutToWatch from './components/AboutToWatch';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
+import LoginForm from './components/LoginForm';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,9 @@ export default function App() {
             } else if (route.name === 'Favourites') {
               iconName = 'heart';
             } else if (route.name === 'AboutToWatch') {
-              iconName = 'film'
+              iconName = 'film';
+            } else if (route.name === 'LoginForm') {
+              iconName = 'log-in-outline';
             }
 
             return <Ionicons name={ iconName } size={ size } color={ color } />;
@@ -34,6 +37,7 @@ export default function App() {
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Favourites" component={Favourites} />
         <Tab.Screen name="AboutToWatch" component={AboutToWatch} />
+        <Tab.Screen name="LoginForm" component={LoginForm} />
       </Tab.Navigator>
     </NavigationContainer>
   )
