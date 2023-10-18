@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import Popup from './Popup.js';
 import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
+import SearchBar from './SearchBar.js';
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
@@ -29,7 +30,11 @@ export default function Home() {
   };
 
   return (
+    <View style={styles.SearchBarContainer}>
+      <View style={styles.searchBar}>
+      <SearchBar/>
     <View style={styles.container}>
+      
       <FlatList
           data={movies}
           keyExtractor={item => item.id}
@@ -47,7 +52,10 @@ export default function Home() {
             </TouchableOpacity>
           </View>
         }
-        />     
+        />    
+         </View>
+         </View>
+ 
         {selectedMovie && (
         <Popup visible={true} movie={selectedMovie} onClose={closePopup} />
       )} 
@@ -63,6 +71,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 50,
+  },
+  SearchBarContainer:{
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  searchBar: {
+    flex: 1, // Aseta flex: 1
   },
   flatListContainer: {
     justifyContent: 'space-between', 
