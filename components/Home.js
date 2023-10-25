@@ -2,21 +2,50 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import Popup from './Popup.js';
 import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
+import SearchBar from './SearchBar.js';
+import { encode as base64 } from 'base-64'; // Import the base-64 library
+
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
+  // Use your actual API endpoint with your local network IP address
+  const apiUrl = 'http://192.168.***.***:8080/api/tmdb/now-playing';
+
+  // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with your actual credentials
+  const username = 'usernameAnna';
+  const password = 'password';
+
+  const base64Credentials = base64(`${username}:${password}`); // Encode credentials as Base64
+
   useEffect(() => {
-    fetch(process.env.EXPO_PUBLIC_API_URL + process.env.EXPO_PUBLIC_API_KEY)
-    .then(response => response.json())
-    .then(data => {
-      //rajoittaa elokuvien määrän 18
-      const limitedMovies = data.results.slice(0, 18);
-        setMovies(limitedMovies);
+    fetch(apiUrl, {
+      headers: {
+        Authorization: `Basic ${base64Credentials}`,
+        // Other headers if required
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
       })
-    .catch( err => console.error(err))
-    }, []);
+      .then((data) => {
+        if (data && data.length > 0) {
+          //const limitedMovies = data.results.slice(0, 18);
+              setMovies(data);
+          
+        } else {
+          console.warn('Empty response or unexpected data format.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
 
      // Funktio avaa popup-ikkunan valitulle elokuvalle
   const openPopup = (movie) => {
@@ -29,7 +58,11 @@ export default function Home() {
   };
 
   return (
+    <View style={styles.SearchBarContainer}>
+      <View style={styles.searchBar}>
+      <SearchBar/>
     <View style={styles.container}>
+      
       <FlatList
           data={movies}
           keyExtractor={item => item.id}
@@ -40,14 +73,17 @@ export default function Home() {
             <TouchableOpacity onPress={() => openPopup(item)}>
             <Image style={styles.image}source={{ uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}}/>
             <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
-              {item.original_title !== item.title
-              ? `${item.original_title} (${item.title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
-              : item.original_title}
+              {item.title !== item.original_title
+              ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              : item.title}
               </Text> 
             </TouchableOpacity>
           </View>
         }
-        />     
+        />    
+         </View>
+         </View>
+ 
         {selectedMovie && (
         <Popup visible={true} movie={selectedMovie} onClose={closePopup} />
       )} 
@@ -63,6 +99,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 50,
+  },
+  SearchBarContainer:{
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  searchBar: {
+    flex: 1, // Aseta flex: 1
   },
   flatListContainer: {
     justifyContent: 'space-between', 
