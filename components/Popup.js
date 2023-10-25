@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {StyleSheet, View, Modal, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 
 export default function Popup({ visible, movie, onClose }) {
@@ -9,19 +9,19 @@ export default function Popup({ visible, movie, onClose }) {
       animationType="slide"
       
     >
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={styles.popupContainer}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeButtonText}>x</Text>
-        </TouchableOpacity>
-        <Image style={styles.image}source={{ uri: `https://image.tmdb.org/t/p/original/${movie.poster_path}`}}/>
-        <View style={styles.ratingContainer}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Text style={styles.closeButtonText}>x</Text>
+          </TouchableOpacity>
+          <Image style={styles.image}source={{ uri: `https://image.tmdb.org/t/p/original/${movie.poster_path}`}}/>
+          <View style={styles.ratingContainer}>
             <Text style={styles.rating}>{movie.vote_average.toFixed(1)}</Text>
           </View>
           <Text style={styles.title_text}>
-            {movie.original_title !== movie.title
-              ? `${movie.original_title} (${movie.title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
-              : movie.original_title}  
+            {movie.title !== movie.original_title
+              ? `${movie.title} (${movie.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              : movie.title}  
           </Text>
           <Text>Release Date: {movie.release_date}</Text>
           <Text>{movie.overview}</Text>

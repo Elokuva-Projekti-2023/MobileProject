@@ -56,9 +56,9 @@ export default function SearchBar() {
             <TouchableOpacity onPress={() => openPopup(item)}>
               <Image style={styles.image}source={{ uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}}/>
               <Text style={styles.movie_title}>
-              {item.original_title !== item.title
-                ? `${item.original_title} (${item.title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
-                : item.original_title} 
+              {item.title !== item.original_title
+                ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+                : item.title} 
               </Text>
             </TouchableOpacity>
           </View>
