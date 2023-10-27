@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, { useState, useEffect, route } from "react";
 
 import { StyleSheet } from 'react-native';
 import Home from './components/Home';
@@ -8,10 +9,33 @@ import AboutToWatch from './components/AboutToWatch';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import LoginForm from './components/LoginForm';
+import SplashScreen from './components/SplashScreen';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [userToken, setUserToken] = useState(null);
+
+  const getUserToken = async () => {
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    try {
+      await sleep(2000);
+      const token = null;
+      setUserToken(token);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserToken();
+  }, []);
+
+  if (isLoading) {
+    return <SplashScreen />
+  }
     
   return (
     <NavigationContainer>
@@ -34,13 +58,21 @@ export default function App() {
           },
         })
       }>
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Favourites" component={Favourites} />
-        <Tab.Screen name="AboutToWatch" component={AboutToWatch} />
-        <Tab.Screen name="LoginForm" component={LoginForm} />
+        {userToken == null ? (
+          <>
+          <Tab.Screen name='LoginForm' component={LoginForm} initialParams={{ setUserToken }} />
+          </>
+        ) : (
+          <>
+          <Tab.Screen name="Home" component={Home} />
+          <Tab.Screen name="Favourites" component={Favourites} />
+          <Tab.Screen name="AboutToWatch" component={AboutToWatch} /> 
+      
+          </>
+        )}
       </Tab.Navigator>
     </NavigationContainer>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

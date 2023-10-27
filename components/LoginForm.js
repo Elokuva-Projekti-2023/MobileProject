@@ -1,39 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, route } from "react";
 import { TextInput, View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
-export default function LoginForm() {
+export default function LoginForm({ navigation, route }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { setUserToken } = route.params;
+
+    // TODO Login logic
+
+
 
     return (
-        <View style={styles.container}>
-            <View style={styles.inputView}>
-                <TextInput
-                    style={styles.TextInput}
-                    placeholder="Email"
-                    placeholderTextColor="#003f5c"
-                    onChange={(email) => setEmail(email)}
-                />
-            </View>
-
-            <View style={styles.inputView}>
-                <TextInput
-                    style={styles.TextInput}
-                    placeholder="Password"
-                    placeholderTextColor="#003f5c"
-                    secureTextEntry={true}
-                    onChange={(password) => setPassword(password)}
-                />
-            </View>
-
-            <TouchableOpacity 
-                style={styles.loginBtn}
-                onPress={ () => console.log("It works but some login logic is missing")}
-            >
-                <Text style={styles.loginText}>LOGIN</Text>
-            </TouchableOpacity>
-
+      <View style={styles.container}>
+        <View style={styles.inputView}>
+            <TextInput
+                style={styles.TextInput}
+                placeholder="Email"
+                placeholderTextColor="#003f5c"
+                onChange={(email) => setEmail(email)}
+            />
         </View>
+
+        <View style={styles.inputView}>
+            <TextInput
+                style={styles.TextInput}
+                placeholder="Password"
+                placeholderTextColor="#003f5c"
+                secureTextEntry={true}
+                onChange={(password) => setPassword(password)}
+            />
+        </View>
+
+        <TouchableOpacity 
+            style={styles.loginBtn}
+            onPress={ () => setUserToken('token')}
+        >
+            <Text style={styles.loginText}>LOGIN</Text>
+        </TouchableOpacity>
+
+      </View>
     );
 }
 
