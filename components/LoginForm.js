@@ -1,23 +1,22 @@
-import React, { useState, route } from "react";
+import React, { useState, route, useContext } from "react";
 import { TextInput, View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import AuthContext from '../App';
 
-export default function LoginForm({ navigation, route }) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const { setUserToken } = route.params;
-
-    // TODO Login logic
-
-
+export default function LoginForm() {
+    const [userName, setUserName] = useState('');
+    const [loginpwd, setLoginpwd] = useState('');
+    //const { setUserToken } = route.params;
+    const { signIn } = useContext(AuthContext);
 
     return (
       <View style={styles.container}>
         <View style={styles.inputView}>
             <TextInput
                 style={styles.TextInput}
-                placeholder="Email"
+                placeholder="UserName"
                 placeholderTextColor="#003f5c"
-                onChange={(email) => setEmail(email)}
+                value={userName}
+                onChangeText={setUserName}
             />
         </View>
 
@@ -26,16 +25,17 @@ export default function LoginForm({ navigation, route }) {
                 style={styles.TextInput}
                 placeholder="Password"
                 placeholderTextColor="#003f5c"
+                value={loginpwd}
                 secureTextEntry={true}
-                onChange={(password) => setPassword(password)}
+                onChangeText={setLoginpwd}
             />
         </View>
 
         <TouchableOpacity 
             style={styles.loginBtn}
-            onPress={ () => setUserToken('token')}
+            onPress={ () => signIn({ userName, loginpwd })}
         >
-            <Text style={styles.loginText}>LOGIN</Text>
+            <Text style={styles.loginText}>Sign in</Text>
         </TouchableOpacity>
 
       </View>

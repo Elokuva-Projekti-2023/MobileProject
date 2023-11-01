@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import Popup from './Popup.js';
-import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
 import { encode as base64 } from 'base-64'; // Import the base-64 library
 
 
 export default function Home() {
+
+  const { signOut }  = useContext(AuthContext);
+
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
@@ -61,6 +64,10 @@ export default function Home() {
     <View style={styles.SearchBarContainer}>
       <View style={styles.searchBar}>
       <SearchBar/>
+      <View>
+      <Text>Signed in!</Text>
+      <Button title="Sign out" onPress={signOut} />
+    </View>
     <View style={styles.container}>
       
       <FlatList
