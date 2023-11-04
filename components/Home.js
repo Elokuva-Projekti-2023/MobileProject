@@ -4,11 +4,12 @@ import Popup from './Popup.js';
 import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
 import { encode as base64 } from 'base-64'; // Import the base-64 library
+import AuthContext from '../App';
 
 
 export default function Home() {
 
-  const { signOut }  = useContext(AuthContext);
+  const { signOut }  = React.useContext(AuthContext);
 
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);

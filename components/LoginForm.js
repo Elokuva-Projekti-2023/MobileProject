@@ -1,12 +1,11 @@
 import React, { useState, route, useContext } from "react";
-import { TextInput, View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import AuthContext from '../App';
+import { TextInput, View, StyleSheet, TouchableOpacity, Text, Button } from "react-native";
+import { useAuth } from './AuthContext';
 
 export default function LoginForm() {
     const [userName, setUserName] = useState('');
     const [loginpwd, setLoginpwd] = useState('');
-    //const { setUserToken } = route.params;
-    const { signIn } = useContext(AuthContext);
+    const {signIn} = useAuth();
 
     return (
       <View style={styles.container}>
@@ -31,13 +30,15 @@ export default function LoginForm() {
             />
         </View>
 
+        <Button title="Sign in" onPress={() => signIn({ userName, loginpwd })} />
+{{/*
         <TouchableOpacity 
             style={styles.loginBtn}
             onPress={ () => signIn({ userName, loginpwd })}
         >
             <Text style={styles.loginText}>Sign in</Text>
         </TouchableOpacity>
-
+    */}}
       </View>
     );
 }
