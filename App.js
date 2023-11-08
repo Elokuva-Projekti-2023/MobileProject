@@ -11,13 +11,16 @@ import AboutToWatch from './components/AboutToWatch';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import LoginForm from './components/LoginForm';
 import SplashScreen from './components/SplashScreen';
-import AuthProvider, { useAuth } from './components/AuthContext';
+import AuthProvider, { useAuth} from './components/AuthContext';
 
 const Tab = createBottomTabNavigator();
 
 export default function App({ navigation }) {
 
-const { state } = useAuth();
+const isLoading  = useAuth();
+const isSignout = useAuth();
+
+//const { state } = useAuth();
     
   return (
     <AuthProvider>

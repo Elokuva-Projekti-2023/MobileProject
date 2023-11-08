@@ -1,7 +1,8 @@
 // AuthContext.js
-import { createContext, useContext, useReducer, useMemo, state } from 'react';
+import * as React from 'react';
+import { createContext, useContext, useReducer, useMemo } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = React.createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -41,7 +42,7 @@ export function AuthProvider({ children }) {
       React.useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
         const bootstrapAsync = async () => {
-          let userToken;
+          let userToken ="";
     
           try {
             // Restore token stored in `SecureStore` or any other encrypted storage
