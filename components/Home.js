@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import Popup from './Popup.js';
-import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
 import { encode as base64 } from 'base-64'; // Import the base-64 library
+import { FIREBASE_AUTH } from '../FirebaseConfig.js';
 
 
-export default function Home() {
+export default function Home({navigation}) {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
@@ -60,8 +61,11 @@ export default function Home() {
   return (
     <View style={styles.SearchBarContainer}>
       <View style={styles.searchBar}>
-      <SearchBar/>
+      <SearchBar/> 
     <View style={styles.container}>
+    <View>
+        <Button onPress={() => FIREBASE_AUTH.signOut() } title='Logout' style={styles.loginContainer} />
+      </View>
       
       <FlatList
           data={movies}
@@ -127,4 +131,20 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: 'center',
   },
+    loginContainer: {
+        marginHorizontal: 20,
+        flex: 1,
+        justifyContent: 'center'
+    },
+    loginInput: {
+        marginVertical: 4,
+        height: 50,
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 10,
+        backgroundColor: '#fff'
+    },
+    loginButton: {
+        padding: 10
+    }
 });
