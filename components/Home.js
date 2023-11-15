@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import Popup from './Popup.js';
-import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
 import { encode as base64 } from 'base-64'; // Import the base-64 library
 
@@ -11,7 +11,7 @@ export default function Home() {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   // Use your actual API endpoint with your local network IP address
-  const apiUrl = 'http://192.168.***.***:8080/api/tmdb/now-playing';
+  const apiUrl = 'http://192.168.255.52:8080/api/tmdb/now-playing';
 
   // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with your actual credentials
   const username = 'usernameAnna';
@@ -62,6 +62,11 @@ export default function Home() {
       <View style={styles.searchBar}>
       <SearchBar/>
     <View style={styles.container}>
+
+    <Button
+        title="Go to Authentication"
+        onPress={() => navigation.navigate('AuthScreen')}
+      />
       
       <FlatList
           data={movies}
