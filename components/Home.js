@@ -71,7 +71,13 @@ export default function Home() {
           renderItem={({item}) =>  
           <View key={item.id} style={styles.itemContainer}>
             <TouchableOpacity onPress={() => openPopup(item)}>
-            <Image style={styles.image}source={{ uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}}/>
+            <Image style={styles.image}
+              source={
+                item.poster_path
+                ? { uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}
+                : require ('../poster_placeholder.png')
+              }
+            />
             <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
               {item.title !== item.original_title
               ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)

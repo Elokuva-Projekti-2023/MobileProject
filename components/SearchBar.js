@@ -1,6 +1,8 @@
 import { TextInput, Button, FlatList, StyleSheet, View, StatusBar, Text, Image, TouchableOpacity } from 'react-native';
 import {useState} from 'react';
 import Popup from './Popup';
+import { encode as base64 } from 'base-64'; // Import the base-64 library
+
 
 export default function SearchBar() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,11 +11,41 @@ export default function SearchBar() {
 
     
   const fetchSearchedMovies = () => {
-    fetch(`https://api.themoviedb.org/3/search/movie?query=${searchTerm}&api_key=${process.env.EXPO_PUBLIC_API_KEY}`)
-    .then(response => response.json())
-    .then(data => setMovies(data.results))
-    .catch(err => console.error(err))
-  }
+    // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with your actual credentials
+    const username = 'usernameAnna';
+    const password = 'password';
+  
+    // Encode credentials as Base64
+    const base64Credentials = base64(`${username}:${password}`);
+
+    fetch(`http://192.168.***.***:8080/api/tmdb/search/movie?searchTerm=${searchTerm}`, 
+    {
+      headers: {
+        Authorization: `Basic ${base64Credentials}`,
+        // Other headers if required
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        setMovies(data);
+      } else {
+        console.log('API response is missing results property or the results array is empty: []');
+        // Display a message to the user indicating that no results were found.
+      }
+    })
+    
+    
+    .catch(err => {
+      console.error('Error fetching or parsing movies:', err);
+      // Display a message to the user about the network error
+    });
+  };
 
      // Funktio avaa popup-ikkunan valitulle elokuvalle
   const openPopup = (movie) => {
@@ -54,7 +86,13 @@ export default function SearchBar() {
         renderItem={({item, index}) =>(
           <View style={[styles.movieContainer, index === 0 && styles.firstMovie]}>
             <TouchableOpacity onPress={() => openPopup(item)}>
-              <Image style={styles.image}source={{ uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}}/>
+            <Image style={styles.image}
+              source={
+                item.poster_path
+                ? { uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}
+                : require ('../poster_placeholder.png')
+              }
+            />
               <Text style={styles.movie_title}>
               {item.title !== item.original_title
                 ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
