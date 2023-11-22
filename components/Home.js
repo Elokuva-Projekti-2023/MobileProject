@@ -4,11 +4,14 @@ import Popup from './Popup.js';
 import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
 import { encode as base64 } from 'base-64'; // Import the base-64 library
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  const navigation = useNavigation();
 
   // Use your actual API endpoint with your local network IP address
   const apiUrl = 'http://192.168.255.52:8080/api/tmdb/now-playing';
