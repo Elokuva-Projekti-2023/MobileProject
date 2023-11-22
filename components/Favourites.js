@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { FlatList, StyleSheet, Text, View, ActivityIndicator, Image } from 'react-native';
 import { encode as base64 } from 'base-64'; // Import the base-64 library
 
 export default function Favourites() {
@@ -39,13 +39,13 @@ export default function Favourites() {
     };
 
     fetchData();
-  }, []);
+  }, [base64Credentials]);
 
   return (
     <View style={styles.container}>
       <Text>Tämä sivu suosikeille!</Text>
       <StatusBar style="auto" />
-
+  
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
@@ -53,18 +53,38 @@ export default function Favourites() {
       ) : (
         <FlatList
           data={favoritesList}
-          keyExtractor={(item) => (item.id ?? '').toString()} // Ensure key is a string
+          keyExtractor={(item) => item.user_id.toString()} // Assuming user_id is a unique identifier
           numColumns={3}
           contentContainerStyle={styles.flatListContainer}
           renderItem={({ item }) => (
-            <View key={item.id} style={styles.itemContainer}>
-              <Text>{item.favoritesList.movies.title}</Text>
-            </View>
+            
+            console.log('Current User:', item.userName),
+            console.log('Movies:', item.favoritesList.movies),
+
+            <View key={item.user_id} /*style={styles.itemContainer}*/>
+              <Text>User: {item.userName}</Text>
+              <Text>Movies:</Text>
+              {item.favoritesList.movies.map((movie) => (
+                
+                <View key={movie.id}>
+                   <Image style={styles.image}
+                      source={
+                      movie.poster_path
+                      ? { uri: `https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+                      : require ('../poster_placeholder.png')
+                        }
+                    />
+                  <Text>{movie.title}</Text>
+                </View>
+              ))}
+            </View> 
           )}
         />
       )}
+      
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
