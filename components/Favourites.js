@@ -43,7 +43,6 @@ export default function Favourites() {
 
   return (
     <View style={styles.container}>
-      <Text>Tämä sivu suosikeille!</Text>
       <StatusBar style="auto" />
   
       {loading ? (

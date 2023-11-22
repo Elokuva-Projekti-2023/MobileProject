@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 
 const AuthScreen = ({ navigation }) => {
@@ -40,8 +40,6 @@ const AuthScreen = ({ navigation }) => {
         throw new Error('Registration failed');
       }
 
-     
-
       // Additional actions after successful registration and sign-in
       console.log('User registered and signed in:', userCredential.user);
       navigation.navigate('Home'); // Navigate to the home screen
@@ -54,7 +52,7 @@ const AuthScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Registration Screen</Text>
+      <Text>Registration Form</Text>
       <TextInput
         placeholder="Username"
         value={userName}
@@ -84,13 +82,16 @@ const AuthScreen = ({ navigation }) => {
       {loading ? (
         <ActivityIndicator size="small" color="#0000ff" />
       ) : (
-        <Button title="Register" onPress={handleRegister} />
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.textInput}>Register</Text>
+        </TouchableOpacity>
       )}
       {error && <Text style={styles.error}>{error}</Text>}
-      <Button
-        title="Go Back to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+         <Text style={styles.textInput}>Go Back to</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
@@ -107,6 +108,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     width: 200,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    textAlign: 'center',
+  },
+  button: {
+    width: 100,
+    borderRadius: 10,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    margin:5,
+    backgroundColor: "#FF1493",
+  },
+  textInput: {
+    color: 'white'
   },
   error: {
     color: 'red',
