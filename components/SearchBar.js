@@ -1,7 +1,8 @@
 import { TextInput, Button, FlatList, StyleSheet, View, StatusBar, Text, Image, TouchableOpacity } from 'react-native';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Popup from './Popup';
 import { encode as base64 } from 'base-64'; // Import the base-64 library
+import _ from 'lodash';
 
 
 export default function SearchBar() {
@@ -62,6 +63,29 @@ export default function SearchBar() {
     setMovies([]); // Tyhjennä myös elokuvien lista
   };
   
+  const delayedFetch = _.debounce(fetchSearchedMovies, 10); 
+
+  useEffect(() => {
+    delayedFetch(); 
+    return delayedFetch.cancel; 
+  }, [searchTerm]);
+
+
+  const calculateMargin = (title, originalTitle) => {
+    const combinedTitle = title !== originalTitle ? `${title} (${originalTitle})` : title;
+    const lineBreaks = combinedTitle.split('\n').length; // Tarkista rivinvaihdot
+  
+    // Tee arvio rivien määrästä perustuen rivinvaihtojen määrään
+    if (lineBreaks > 3) {
+      return 4;
+    } else if (lineBreaks > 2) {
+      return 3;
+    } else if (lineBreaks > 1) {
+      return 2; // Arvioitu kahdelle riville
+    }
+    return 1; // Arvioitu yhdelle riville
+  };
+
   return (
     <View>
       <View style={styles.searchBar}>
@@ -80,20 +104,39 @@ export default function SearchBar() {
             </TouchableOpacity>
           )}
       </View>
+      {searchTerm.length > 0 && (
       <FlatList
         data={movies}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({item, index}) =>(
           <View style={[styles.movieContainer, index === 0 && styles.firstMovie]}>
             <TouchableOpacity onPress={() => openPopup(item)}>
-            <Image style={styles.image}
+            <Image style={[
+              styles.image,
+              {
+                top: searchTerm.length > 0 ? (calculateMargin(item.title, item.original_title) 
+                    === 1 ? 10 : calculateMargin(item.title, item.original_title) 
+                    === 2 ? 15 : calculateMargin(item.title, item.original_title) 
+                    === 3 ? 20 : 25) : 0,
+              },
+            ]}
               source={
                 item.poster_path
                 ? { uri: `https://image.tmdb.org/t/p/original/${item.poster_path}`}
                 : require ('../poster_placeholder.png')
               }
             />
-              <Text style={styles.movie_title}>
+              <Text
+                style={[
+                  styles.movie_title,
+                  {
+                    bottom: searchTerm.length > 0 ? (calculateMargin(item.title, item.original_title) 
+                    === 1 ? 30 : calculateMargin(item.title, item.original_title) 
+                    === 2 ? 35 : calculateMargin(item.title, item.original_title) 
+                    === 3 ? 40 : 45) : 0,
+                  },
+                ]}
+              >
               {item.title !== item.original_title
                 ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
                 : item.title} 
@@ -103,6 +146,7 @@ export default function SearchBar() {
       
         )}
       />
+      )}
 
       {selectedMovie && (
         <Popup visible={true} movie={selectedMovie} onClose={closePopup} />
@@ -122,7 +166,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         zIndex: 1, // Varmista, että searchbar on muiden elementtien päällä
-        paddingLeft: 10, // Lisää marginaali vasemmalle sivulle
+        padding: 2,
+        marginLeft: 10,
+        marginRight: 10,
+        borderRadius: 3,
+        borderWidth: 1
       },
     input: {
       flex: 1, // Take up remaining space
@@ -135,16 +183,16 @@ const styles = StyleSheet.create({
       },
     movieContainer:{
         flexDirection: 'row',
-        backgroundColor: 'rgba(255,255,255, 0.5)',
+        backgroundColor: 'lightgray',
         borderColor: 'gray',
-        borderWidth: 1,
-        
+        borderWidth: 0.4,
     },
     movie_title:{
         fontSize: 15,
         fontWeight: 'bold',
         marginLeft: 15,
-        
+        marginRight: 50,
+        left: 45,
     },
     firstMovie: {
       marginTop: 37, // Lisää ylimääräinen tila ensimmäisen elokuvan yläpuolelle hakupalkin koko
