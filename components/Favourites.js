@@ -1,21 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, React, useCallback } from 'react';
 import { FlatList, StyleSheet, Text, View, ActivityIndicator, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function Favourites() {
   const [favoritesList, setFavoritesList] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const favoritesUrl = `http://192.168.255.52:8080/movielists/1/movie-lists`;
+  const [currentUser, setCurrentUser] = useState('');
 
   const navigate = useNavigation();
 
   const retrieveToken = async () => {
     try {
+      console.log('Retrieving token...');
       const token = await AsyncStorage.getItem('token');
+      console.log('Retrieved token:', token);
       return token;
     } catch (error) {
       console.error('Error retrieving token:', error);
@@ -23,59 +24,74 @@ export default function Favourites() {
     }
   };
 
+  const retrieveUserId= async () => {
+    try {
+      console.log('Retrieving userID...');
+      const userId = await AsyncStorage.getItem('userId');
+      const userName = await AsyncStorage.getItem('userName');
+      console.log('Retrieved userID:', userId);
+      setCurrentUser(userName);
+      return userId;
+    } catch (error) {
+      console.error('Error retrieving id:', error);
+      return null;
+    }
+  };
+
   const verifyUser = async () => {
+    console.log('Verifying user...');
     const token = await retrieveToken();
+    console.log('Retrieved token:', token);
+    const userId = await retrieveUserId();
   
     if (token) {
       try {
-        const response = await fetch('http://example.com/api/some_endpoint', {
+        const response = await fetch(`http://192.168.255.52:8080/movielists/${userId}/movie-lists`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+
             'Content-Type': 'application/json',
           },
-          // other request options...
         });
   
-        // Handle the response as needed
-        // ...
+        if (response.ok) {
+          const data = await response.json();
+  
+          if (data.favoritesList) {
+            const favorites = data.favoritesList.movies || [];
+  
+            if (favorites.length === 0) {
+              // Handle case where favorites list is empty
+              setError('Favorites list is empty.');
+            } else {
+              setFavoritesList(favorites);
+            } 
+          } else {
+            setError('Invalid response format: favoritesList not found.');
+          }
+        } else {
+          setError(`Error: ${response.status}`);
+        }
       } catch (error) {
         console.error('Error verifying user:', error);
+        setError('An error occurred while fetching data.');
+      } finally {
+        setLoading(false);
       }
     } else {
       // Token is not available, handle this case (e.g., redirect to login screen)
-
+      navigate.navigate('Login');
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(favoritesUrl, {
-          headers: {
-            Authorization: `Basic ${base64Credentials}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const result = await response.json();
-        setFavoritesList(result.favoritesList.movies); // Accessing movies directly
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [base64Credentials, favoritesUrl]);
+    verifyUser();
+  }, []);
+  
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-
+      <Text>Logged in as: {currentUser}</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (

@@ -32,17 +32,23 @@ const Login = () => {
       
         if (response.ok) {
           const token = data.sessionToken;
+          const userId = data.userData.userId;
+          const userName = data.userData.userName;
       
-          if (token) {
+          if (token && userId) {
             // Store the token in AsyncStorage
             await AsyncStorage.setItem('token', token);
+            await AsyncStorage.setItem('userId', userId.toString());
+            await AsyncStorage.setItem('userName', userName);
             // Optionally, you can set a confirmation message
             setConfirmation('Login successful!');
+            console.log(token);
+            console.log(userId);
             // Optionally, you can redirect the user to another page
             // history.push('/dashboard');
-            navigate.navigation('Favourites')
+            //navigate.navigation('Favourites')
           } else {
-            setError('Token is undefined');
+            setError('Token or userId is undefined');
           }
         } else {
           setError('Login failed. Please check your credentials.');
