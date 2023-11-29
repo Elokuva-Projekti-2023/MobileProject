@@ -5,6 +5,8 @@ import { StyleSheet } from 'react-native';
 import Home from './components/Home';
 import Favourites from './components/Favourites';
 import AboutToWatch from './components/AboutToWatch';
+import AuthScreen from './components/AuthScreen';
+import Login from './components/Login';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -25,6 +27,10 @@ export default function App() {
               iconName = 'heart';
             } else if (route.name === 'AboutToWatch') {
               iconName = 'film'
+            } else if (route.name === 'AuthScreen') {
+              iconName = 'log-in-outline'
+            } else if (route.name === 'Login') {
+              iconName = 'log-in-outline'
             }
 
             return <Ionicons name={ iconName } size={ size } color={ color } />;
@@ -34,6 +40,8 @@ export default function App() {
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Favourites" component={Favourites} />
         <Tab.Screen name="AboutToWatch" component={AboutToWatch} />
+        <Tab.Screen name="AuthScreen" component={AuthScreen} />
+        <Tab.Screen name="Login" component={Login} />
       </Tab.Navigator>
     </NavigationContainer>
   )
