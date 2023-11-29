@@ -114,9 +114,7 @@ export default function Profile() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <View style={styles.loginText}>
-      <Text>Logged in as: {currentUser}</Text>
-      </View>
+      
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
@@ -124,12 +122,18 @@ export default function Profile() {
         
       ) : (
         <View>
-        <Text style={styles.headline}>Watched Movies</Text>
         <FlatList
           data={onWatchList}
           keyExtractor={(item) => item.id} // Assuming id is a unique identifier
           numColumns={3}
           contentContainerStyle={styles.flatListContainer}
+          ListHeaderComponent={
+            <View style={styles.profile}>
+              <Image source={ require('../ProfilePicturePlaceholder.png') } style={styles.profileImage} />
+              <Text style={styles.profileText}>{currentUser}</Text>
+              <Text style={styles.headline}>Watched Movies</Text>
+            </View>
+          }
           renderItem={({ item }) => (
             <View key={item.id} style={styles.itemContainer}>
             <TouchableOpacity onPress={() => openPopup(item)}>
@@ -197,8 +201,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10
   },
-  loginText: {
-    marginTop: 15
-  }
+  profile: {
+    marginTop: 15,
+  },
+  profileImage: {
+    width: 100, 
+    height: 100, 
+    marginBottom:20,
+    alignSelf: 'center'
+  },
+  profileText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
 
