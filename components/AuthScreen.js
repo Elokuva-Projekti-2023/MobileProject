@@ -42,7 +42,7 @@ const AuthScreen = ({ navigation }) => {
 
       // Additional actions after successful registration and sign-in
       console.log('User registered and signed in:', userCredential.user);
-      navigation.navigate('Home'); // Navigate to the home screen
+      navigation('Home'); // Navigate to the home screen
     } catch (err) {
       setLoading(false);
       setError(err.message || 'Registration failed');
