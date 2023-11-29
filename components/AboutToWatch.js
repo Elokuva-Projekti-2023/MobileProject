@@ -4,8 +4,8 @@ import { FlatList, StyleSheet, Text, View, ActivityIndicator, Image } from 'reac
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-export default function Favourites() {
-  const [favoritesList, setFavoritesList] = useState([]);
+export default function AboutToWatch() {
+  const [aboutToWatchList, setAboutToWatchList] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState('');
@@ -56,17 +56,17 @@ export default function Favourites() {
         if (response.ok) {
           const data = await response.json();
   
-          if (data.favoritesList) {
-            const favorites = data.aboutToWatchList.movies || [];
+          if (data.aboutToWatchList) {
+            const aboutToWatch = data.aboutToWatchList.movies || [];
   
-            if (favorites.length === 0) {
-              // Handle case where favorites list is empty
+            if (aboutToWatch.length === 0) {
+              // Handle case where about to watch list is empty
               setError('About to watch list is empty.');
             } else {
-              setFavoritesList(favorites);
+              setAboutToWatchList(aboutToWatch);
             } 
           } else {
-            setError('Invalid response format: favoritesList not found.');
+            setError('Invalid response format: aboutToWatchList not found.');
           }
         } else {
           setError(`Error: ${response.status}`);
@@ -90,20 +90,19 @@ export default function Favourites() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Text>Logged in as: {currentUser}</Text>
+      <StatusBar style="auto" /> 
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
         <Text>Error: {error}</Text>
       ) : (
         <FlatList
-          data={favoritesList}
+          data={aboutToWatchList}
           keyExtractor={(item) => item.id.toString()} // Assuming id is a unique identifier
           numColumns={3}
           contentContainerStyle={styles.flatListContainer}
           renderItem={({ item }) => (
-            <View key={item.id}>
+            <View key={item.id} style={styles.itemContainer}>
               <Image
                 style={styles.image}
                 source={
@@ -112,7 +111,11 @@ export default function Favourites() {
                     : require('../poster_placeholder.png')
                 }
               />
-              <Text>{item.title}</Text>
+              <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
+              {item.title !== item.original_title
+              ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              : item.title}
+              </Text> 
             </View>
           )}
         />
