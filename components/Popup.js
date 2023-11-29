@@ -8,9 +8,9 @@ import { encode as base64 } from 'base-64'; // Import the base-64 library
 export default function Popup({ visible, movie, onClose }) {
 
    // Use your actual API endpoint with your local network IP address
-   const apiUrlFavorites = `http://192.168.***.***:8080/movielists/1/add-movie-to-favorites/${movie.id}`;
-   const apiUrlWatched = `http://192.168.***.***:8080/movielists/1/add-movie-to-watched/${movie.id}`;
-   const apiUrlWatchlater = `http://192.168.***.***:8080/movielists/1/add-movie-to-about-to-watch/${movie.id}`;
+   const apiUrlFavorites = `http://192.168.255.52:8080/movielists/1/add-movie-to-favorites/${movie.id}`;
+   const apiUrlWatched = `http://192.168.255.52:8080/movielists/1/add-movie-to-watched/${movie.id}`;
+   const apiUrlWatchlater = `http://192.168.255.52:8080/movielists/1/add-movie-to-about-to-watch/${movie.id}`;
 
    // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with your actual credentials
    const username = 'usernameAnna';

@@ -18,7 +18,7 @@ export default function SearchBar() {
     // Encode credentials as Base64
     const base64Credentials = base64(`${username}:${password}`);
 
-    fetch(`http://192.168.***.***:8080/api/tmdb/search/movie?searchTerm=${searchTerm}`, 
+    fetch(`http://192.168.255.52:8080/api/tmdb/search/movie?searchTerm=${searchTerm}`, 
     {
       headers: {
         Authorization: `Basic ${base64Credentials}`,
