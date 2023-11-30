@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import {StyleSheet, View, Modal, Text, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Button } from '@rneui/themed';
 import { Icon } from '@rneui/base';
+<<<<<<< HEAD
+=======
+import { encode as base64 } from 'base-64'; // Import the base-64 library
+>>>>>>> main
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Popup({ visible, movie, onClose }) {
@@ -50,10 +54,70 @@ export default function Popup({ visible, movie, onClose }) {
     const [favoriteMovies, setFavoriteMovies] = useState([]);
     const [watchedMovies, setWatchedMovies] = useState([]);
     const [watchLaterMovies, setWatchLaterMovies] = useState([]);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isWatchLater, setIsWatchLater] = useState(false);
+    const [isWatched, setIsWatched] = useState(false);
+    const [favoriteColor, setFavoriteColor] = useState('rgba(100, 100, 100, 0.96)');
+    const [watchLaterColor, setWatchLaterColor] = useState('rgba(100, 100, 100, 0.96)');
+    const [watchedColor, setWatchedColor] = useState('rgba(100, 100, 100, 0.96)');
 
+<<<<<<< HEAD
   const addToFavorites = async() => {
     const token = await retrieveToken();
     const userId = await retrieveUserId();
+=======
+    const saveMovieState = async (key, value) => {
+      try {
+        await AsyncStorage.setItem(key, JSON.stringify(value));
+      } catch (error) {
+        console.error('Error saving movie state:', error);
+      }
+    };
+    
+    // Funktio elokuvan tilan hakemiseen paikallisesti
+    const getMovieState = async (key) => {
+      try {
+        const value = await AsyncStorage.getItem(key);
+        return value ? JSON.parse(value) : null;
+      } catch (error) {
+        console.error('Error getting movie state:', error);
+        return null;
+      }
+    };
+  
+    useEffect(() => {
+      const checkFavorite = async () => {
+        const storedFavoriteMovies = await getMovieState('favoriteMovies');
+        if (storedFavoriteMovies && storedFavoriteMovies.some((favoriteMovie) => favoriteMovie.id === movie.id)) {
+          setFavoriteColor('rgb(255, 215, 0)');
+          setIsFavorite(true);
+        }
+      };
+  
+      const checkWatchLater = async () => {
+        const storedWatchLaterMovies = await getMovieState('watchLaterMovies');
+        if (storedWatchLaterMovies && storedWatchLaterMovies.some((watchLaterMovie) => watchLaterMovie.id === movie.id)) {
+          setWatchLaterColor('rgb(255, 105, 180)');
+          setIsWatchLater(true);
+        }
+      };
+  
+      const checkWatched = async () => {
+        const storedWatchedMovies = await getMovieState('watchedMovies');
+        if (storedWatchedMovies && storedWatchedMovies.some((watchedMovie) => watchedMovie.id === movie.id)) {
+          setWatchedColor('rgb(148, 0, 211)');
+          setIsWatched(true);
+        }
+      };
+  
+      checkFavorite();
+      checkWatchLater();
+      checkWatched();
+    }, [movie.id]);
+  
+    const addToFavorites = async() => {
+
+>>>>>>> main
     if (favoriteMovies.some((favoriteMovie) => favoriteMovie.id === movie.id)) {
       alert(`${movie.title} is already in your favorites`);
       return;
@@ -71,8 +135,12 @@ export default function Popup({ visible, movie, onClose }) {
       });
   
       if (response.ok) {
-        setFavoriteMovies([...favoriteMovies, movie]);
-        alert(`${movie.title} added to favorites`)
+        const updatedFavoriteMovies = [...favoriteMovies, movie];
+        setFavoriteMovies(updatedFavoriteMovies); // Päivitä tila ensin
+  
+        await saveMovieState('favoriteMovies', updatedFavoriteMovies);
+        setIsFavorite(true);
+        setFavoriteColor('rgb(255, 215, 0)');
         console.log(`Movie with ID ${movie.id} added to favorites successfully`);
 
       } else {
@@ -104,8 +172,12 @@ export default function Popup({ visible, movie, onClose }) {
       });
   
       if (response.ok) {
-        setWatchLaterMovies([...watchedMovies, movie]);
-        alert(`${movie.title} added to watch later`)
+        const updatedWatchLaterMovies = [...watchLaterMovies, movie];
+        setWatchLaterMovies(updatedWatchLaterMovies); // Päivitä tila ensin
+  
+        await saveMovieState('watchLaterMovies', updatedWatchLaterMovies);
+        setIsWatchLater(true);
+        setWatchLaterColor('rgb(255, 105, 180)');
         console.log(`Movie with ID ${movie.id} added to watch later successfully`);
 
       } else {
@@ -137,8 +209,12 @@ export default function Popup({ visible, movie, onClose }) {
       });
   
       if (response.ok) {
-        setWatchedMovies([...watchedMovies, movie]);
-        alert(`${movie.title} added to watched`)
+        const updatedWatchedMovies = [...watchedMovies, movie];
+        setWatchedMovies(updatedWatchedMovies); // Päivitä tila ensin
+  
+        await saveMovieState('watchedMovies', updatedWatchedMovies);
+        setIsWatched(true); 
+        setWatchedColor('rgb(148, 0, 211)');
         console.log(`Movie with ID ${movie.id} added to watched successfully`);
 
       } else {
@@ -149,6 +225,29 @@ export default function Popup({ visible, movie, onClose }) {
       console.error(err);
     }
   };
+  
+  
+  useEffect(() => {
+    const fetchMovieStates = async () => {
+      const favoriteMoviesState = await getMovieState('favoriteMovies');
+      const watchLaterMoviesState = await getMovieState('watchLaterMovies');
+      const watchedMoviesState = await getMovieState('watchedMovies');
+  
+      if (favoriteMoviesState) {
+        setFavoriteMovies(favoriteMoviesState);
+      }
+  
+      if (watchLaterMoviesState) {
+        setWatchLaterMovies(watchLaterMoviesState);
+      }
+  
+      if (watchedMoviesState) {
+        setWatchedMovies(watchedMoviesState);
+      }
+    };
+  
+    fetchMovieStates();
+  }, []);
   
 
   return (
@@ -161,7 +260,7 @@ export default function Popup({ visible, movie, onClose }) {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={styles.popupContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>x</Text>
+            <Icon name='close'type='material-icons' color="white"/>
           </TouchableOpacity>
           <Image style={styles.image}
           source={
@@ -175,26 +274,26 @@ export default function Popup({ visible, movie, onClose }) {
           </View>
           <Text style={styles.title_text}>
             {movie.title !== movie.original_title
-              ? `${movie.title} (${movie.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              ? `${movie.title} (${movie.original_title})` //kun origin_title ja title ei ole sama, näkyy title (original_title)
               : movie.title}  
           </Text>
 
           <View style={styles.buttons}>
             <View style={{ alignItems: 'center', marginRight: 10}}>
-              <Button onPress={addToFavorites} radius={'xl'} color={'rgba(100, 100, 100, 0.96)'}>
-                <Icon name='heart'type='font-awesome' color="white"/>
+              <Button onPress={() => addToFavorites(movie.movieId)} radius={'xl'} color={favoriteColor}>
+                <Icon name='star'type='font-awesome' color="white"/>
               </Button>
               <Text style={{ color: 'white', fontSize: 9}}>Save</Text>
             </View>
 
           <View style={{ alignItems: 'center', marginRight: 10 }}>
-            <Button onPress={addToWatchLater} radius={'xl'} color={'rgba(100, 100, 100, 0.96)'}>
+            <Button onPress={addToWatchLater} radius={'xl'} color={watchLaterColor}>
               <Icon name='watch-later'type='material-icons' color="white"/>          
             </Button>
             <Text style={{ color: 'white', fontSize: 9}}>Watch later</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Button onPress={addToWatched} radius={'xl'} color={'rgba(100, 100, 100, 0.96)'}>
+            <Button onPress={addToWatched} radius={'xl'} color={watchedColor}>
               <Icon name='check'type='font-awesome' color="white"/>
             </Button>
             <Text style={{ color: 'white', fontSize: 9}}>Seen</Text>
@@ -202,9 +301,9 @@ export default function Popup({ visible, movie, onClose }) {
           </View>
 
           <ScrollView style={styles.overviewContainer}>
-          <Text>Release Date: {movie.release_date}</Text>
-          <Text>{movie.overview}</Text>
-          <Text>{movie.id}</Text>
+          <Text style={{ color: 'white', marginBottom: 10}}>Release Date: {movie.release_date}</Text>
+          <Text style={{ color: 'white'}}>{movie.overview}</Text>
+          <Text style={{ color: 'white'}}>{movie.id}</Text>
 
           </ScrollView>
         </View>
@@ -216,7 +315,7 @@ export default function Popup({ visible, movie, onClose }) {
 
 const styles = StyleSheet.create({
     popupContainer: {
-      backgroundColor: 'rgba(128, 128, 128, 0.96)',
+      backgroundColor: 'rgba(40, 40, 40, 0.96)',
       padding: 20,
       borderRadius: 10,
       height: Dimensions.get('window').height *0.84, // Koko näytön korkeuden mukaan, voit säätää tarvittaessa
@@ -239,10 +338,6 @@ const styles = StyleSheet.create({
       backgroundColor: 'transparent',
       zIndex: 1,
     },
-    closeButtonText: {
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
     title_text: {
       fontSize: 20,
       fontWeight: 'bold',
@@ -251,6 +346,7 @@ const styles = StyleSheet.create({
       left: Dimensions.get('window').width * 0.4,
       maxWidth: Dimensions.get('window').width / 2, // Maksimileveys puoleenväliin näyttöä
       height: Dimensions.get('window').height / 2,
+      color: 'white',
     },
     ratingContainer: {
       backgroundColor: 'yellow',
