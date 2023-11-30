@@ -9,6 +9,7 @@ import AuthScreen from './components/AuthScreen';
 import Login from './components/Login';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Profile from './components/Profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,6 +32,8 @@ export default function App() {
               iconName = 'log-in-outline'
             } else if (route.name === 'Login') {
               iconName = 'log-in-outline'
+            } else if (route.name === 'Profile') {
+              iconName = 'log-in-outline'
             }
 
             return <Ionicons name={ iconName } size={ size } color={ color } />;
@@ -42,6 +45,7 @@ export default function App() {
         <Tab.Screen name="AboutToWatch" component={AboutToWatch} />
         <Tab.Screen name="AuthScreen" component={AuthScreen} />
         <Tab.Screen name="Login" component={Login} />
+        <Tab.Screen name="Profile" component={Profile} />
       </Tab.Navigator>
     </NavigationContainer>
   )
