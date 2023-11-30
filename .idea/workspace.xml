@@ -7,9 +7,11 @@
     <list default="true" id="12e54984-79e4-49a8-8b6f-48ea6a4b781a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/AboutToWatch.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/AboutToWatch.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Favourites copy.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/AuthScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/AuthScreen.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Favourites.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Favourites.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Home.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/Popup.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
