@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {StyleSheet, View, Modal, Text, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Button } from '@rneui/themed';
 import { Icon } from '@rneui/base';
-<<<<<<< HEAD
-=======
-import { encode as base64 } from 'base-64'; // Import the base-64 library
->>>>>>> main
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Popup({ visible, movie, onClose }) {
@@ -22,11 +18,6 @@ export default function Popup({ visible, movie, onClose }) {
       return null;
     }
   };
-
-   // Use your actual API endpoint with your local network IP address
-   //const apiUrlFavorites = `http://192.168.100.19:8080/movielists/1/add-movie-to-favorites/${movie.id}`;
-   //const apiUrlWatched = `http://192.168.100.19:8080/movielists/1/add-movie-to-watched/${movie.id}`;
-   //const apiUrlWatchlater = `http://192.168.100.19:8080/movielists/1/add-movie-to-about-to-watch/${movie.id}`;
 
    const retrieveToken = async () => {
     try {
@@ -61,11 +52,6 @@ export default function Popup({ visible, movie, onClose }) {
     const [watchLaterColor, setWatchLaterColor] = useState('rgba(100, 100, 100, 0.96)');
     const [watchedColor, setWatchedColor] = useState('rgba(100, 100, 100, 0.96)');
 
-<<<<<<< HEAD
-  const addToFavorites = async() => {
-    const token = await retrieveToken();
-    const userId = await retrieveUserId();
-=======
     const saveMovieState = async (key, value) => {
       try {
         await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -116,8 +102,9 @@ export default function Popup({ visible, movie, onClose }) {
     }, [movie.id]);
   
     const addToFavorites = async() => {
+      const token = await retrieveToken();
+      const userId = await retrieveUserId();
 
->>>>>>> main
     if (favoriteMovies.some((favoriteMovie) => favoriteMovie.id === movie.id)) {
       alert(`${movie.title} is already in your favorites`);
       return;
