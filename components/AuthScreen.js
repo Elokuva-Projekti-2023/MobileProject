@@ -24,7 +24,7 @@ const AuthScreen = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://192.168.100.19:8080/api/auth/register', {
+      const response = await fetch('http://192.168.***.**:8080/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

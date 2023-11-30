@@ -111,7 +111,7 @@ export default function Popup({ visible, movie, onClose }) {
     }
 
     try {  
-      const response = await fetch(`http://192.168.100.19:8080/movielists/${userId}/add-movie-to-favorites/${movie.id}`, {
+      const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/add-movie-to-favorites/${movie.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export default function Popup({ visible, movie, onClose }) {
     }
 
     try {  
-      const response = await fetch(`http://192.168.100.19:8080/movielists/${userId}/add-movie-to-about-to-watch/${movie.id}`, {
+      const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/add-movie-to-about-to-watch/${movie.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ export default function Popup({ visible, movie, onClose }) {
       return;
     }
     try {  
-      const response = await fetch(`http://192.168.100.19:8080/movielists/${userId}/add-movie-to-watched/${movie.id}`, {
+      const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/add-movie-to-watched/${movie.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
