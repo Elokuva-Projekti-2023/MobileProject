@@ -9,7 +9,7 @@ export default function Favourites() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState('');
-
+  
   const navigate = useNavigation();
 
   const retrieveToken = async () => {
@@ -91,7 +91,6 @@ export default function Favourites() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <Text>Logged in as: {currentUser}</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
@@ -103,7 +102,7 @@ export default function Favourites() {
           numColumns={3}
           contentContainerStyle={styles.flatListContainer}
           renderItem={({ item }) => (
-            <View key={item.id}>
+            <View key={item.id} style={styles.itemContainer}>
               <Image
                 style={styles.image}
                 source={
@@ -112,7 +111,11 @@ export default function Favourites() {
                     : require('../poster_placeholder.png')
                 }
               />
-              <Text>{item.title}</Text>
+              <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
+              {item.title !== item.original_title
+              ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              : item.title}
+              </Text> 
             </View>
           )}
         />
