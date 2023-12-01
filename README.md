@@ -22,4 +22,4 @@ npm install
 
 
 # Figma desings
-The Front End side of this app you can find [here](https://www.figma.com/file/lCsJHhWY0FSEGqTIbTHmxg/Movie-Project-Layouts?type=design&node-id=0-1&mode=design&t=Wb3Kubf30Kwpe3Ho-0)
+The prototype of the app is [here](https://www.figma.com/file/lCsJHhWY0FSEGqTIbTHmxg/Movie-Project-Layouts?type=design&node-id=0-1&mode=design&t=Wb3Kubf30Kwpe3Ho-0)
