@@ -82,7 +82,8 @@ export default function AboutToWatch() {
               // Handle case where about to watch list is empty
               setError('About to watch list is empty');
             } else {
-              setAboutToWatchList(aboutToWatch);
+              const reversedList = aboutToWatch.reverse();
+              setAboutToWatchList(reversedList);
             } 
           } else {
             setError('Invalid response format: aboutToWatchList not found.');

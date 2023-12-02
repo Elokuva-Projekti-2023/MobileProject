@@ -82,7 +82,8 @@ export default function Favourites() {
               // Handle case where favorites list is empty
               setError('Favorites list is empty');
             } else {
-              setFavoritesList(favorites);
+              const reversedList = favorites.reverse();
+              setFavoritesList(reversedList);
             } 
           } else {
             setError('Invalid response format: favoritesList not found.');
