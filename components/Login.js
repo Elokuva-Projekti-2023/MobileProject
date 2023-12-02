@@ -36,6 +36,11 @@ const Login = () => {
           const userName = data.userData.userName;
       
           if (token && userId) {
+            // Clear movie lists data for the previous user
+            await AsyncStorage.removeItem('favoriteMovies');
+            await AsyncStorage.removeItem('watchLaterMovies');
+            await AsyncStorage.removeItem('watchedMovies');
+
             // Store the token in AsyncStorage
             await AsyncStorage.setItem('token', token);
             await AsyncStorage.setItem('userId', userId.toString());

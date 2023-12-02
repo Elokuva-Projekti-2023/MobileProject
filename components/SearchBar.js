@@ -11,7 +11,7 @@ export default function SearchBar() {
 
     
   const fetchSearchedMovies = () => {
-    fetch(`http://192.168.***.***:8080/api/tmdb/search/movie?searchTerm=${searchTerm}`)
+    fetch(`http://192.168.***.**:8080/api/tmdb/search/movie?searchTerm=${searchTerm}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');

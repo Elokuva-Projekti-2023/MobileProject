@@ -13,7 +13,7 @@ export default function Home() {
   const navigation = useNavigation();
 
   // Use your actual API endpoint with your local network IP address
-  const apiUrl ='http://192.168.100.19:8080/api/tmdb/now-playing';
+  const apiUrl ='http://192.168.***.**:8080/api/tmdb/now-playing';
 
   useEffect(() => {
     fetch(apiUrl)
