@@ -8,6 +8,7 @@ import Favourites from './components/Favourites';
 import AboutToWatch from './components/AboutToWatch';
 import AuthScreen from './components/AuthScreen';
 import Login from './components/Login';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Profile from './components/Profile';
 

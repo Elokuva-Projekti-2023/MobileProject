@@ -2,21 +2,34 @@ import React, { useEffect, useState } from 'react';
 import {StyleSheet, View, Modal, Text, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Button } from '@rneui/themed';
 import { Icon } from '@rneui/base';
-import { encode as base64 } from 'base-64'; // Import the base-64 library
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Popup({ visible, movie, onClose }) {
+  // Add to favorites
+  // Veryfy user and make request
+  const retrieveUserId= async () => {
+    try {
+      console.log('Retrieving userID...');
+      const userId = await AsyncStorage.getItem('userId');
+      console.log('Retrieved userID:', userId);
+      return userId;
+    } catch (error) {
+      console.error('Error retrieving id:', error);
+      return null;
+    }
+  };
 
-   // Use your actual API endpoint with your local network IP address
-   const apiUrlFavorites = `http://192.168.255.52:8080/movielists/1/add-movie-to-favorites/${movie.id}`;
-   const apiUrlWatched = `http://192.168.255.52:8080/movielists/1/add-movie-to-watched/${movie.id}`;
-   const apiUrlWatchlater = `http://192.168.255.52:8080/movielists/1/add-movie-to-about-to-watch/${movie.id}`;
-
-   // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with your actual credentials
-   const username = 'usernameAnna';
-   const password = 'password';
- 
-   const base64Credentials = base64(`${username}:${password}`); // Encode credentials as Base64
+   const retrieveToken = async () => {
+    try {
+      console.log('Retrieving token...');
+      const token = await AsyncStorage.getItem('token');
+      console.log('Retrieved token:', token);
+      return token;
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+      return null;
+    }
+  };
 
    const movies ={
     movie_id: movie.id,
@@ -89,6 +102,8 @@ export default function Popup({ visible, movie, onClose }) {
     }, [movie.id]);
   
     const addToFavorites = async() => {
+      const token = await retrieveToken();
+      const userId = await retrieveUserId();
 
     if (favoriteMovies.some((favoriteMovie) => favoriteMovie.id === movie.id)) {
       alert(`${movie.title} is already in your favorites`);
@@ -96,14 +111,14 @@ export default function Popup({ visible, movie, onClose }) {
     }
 
     try {  
-      const response = await fetch(apiUrlFavorites, {
+      const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/add-movie-to-favorites/${movie.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${base64Credentials}`, // Include authorization header
+          'Authorization': `Bearer ${token}`, // Include authorization header
         },
-        body: JSON.stringify({movies}),
-        mode: 'cors'
+        body: JSON.stringify({ movies }),
+        mode: 'cors', // Place mode outside the headers
       });
   
       if (response.ok) {
@@ -125,17 +140,19 @@ export default function Popup({ visible, movie, onClose }) {
   };
 
   const addToWatchLater = async() => {
+    const token = await retrieveToken();
+    const userId = await retrieveUserId();
     if (watchLaterMovies.some((watchLaterMovie) => watchLaterMovie.id === movie.id)) {
       alert(`${movie.title} is already in your watch later list`);
       return;
     }
 
     try {  
-      const response = await fetch(apiUrlWatchlater, {
+      const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/add-movie-to-about-to-watch/${movie.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${base64Credentials}`, // Include authorization header
+          'Authorization': `Bearer ${token}`, // Include authorization header
         },
         body: JSON.stringify({movies}),
         mode: 'cors'
@@ -161,16 +178,18 @@ export default function Popup({ visible, movie, onClose }) {
   
 
   const addToWatched = async() => {
+    const token = await retrieveToken();
+    const userId = await retrieveUserId();
     if (watchedMovies.some((watchedMovie) => watchedMovie.id === movie.id)) {
       alert(`${movie.title} is already in your watched list`);
       return;
     }
     try {  
-      const response = await fetch(apiUrlWatched, {
+      const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/add-movie-to-watched/${movie.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${base64Credentials}`, // Include authorization header
+          'Authorization': `Bearer ${token}`, // Include authorization header
         },
         body: JSON.stringify({movies}),
         mode: 'cors'
@@ -280,6 +299,7 @@ export default function Popup({ visible, movie, onClose }) {
   );
 
 }
+
 const styles = StyleSheet.create({
     popupContainer: {
       backgroundColor: 'rgba(40, 40, 40, 0.96)',
