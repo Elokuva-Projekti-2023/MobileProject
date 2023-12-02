@@ -10,7 +10,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [confirmation, setConfirmation] = useState('');
 
-  const navigate = useNavigation();
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -20,7 +20,7 @@ const Login = () => {
     setLoading(true);
   
     try {
-        const response = await fetch('http://192.168.***.**:8080/api/auth/signin', {
+        const response = await fetch('http://192.168.***.***:8080/api/auth/signin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -42,6 +42,7 @@ const Login = () => {
             await AsyncStorage.setItem('userName', userName);
             // Optionally, you can set a confirmation message
             setConfirmation('Login successful!');
+            navigation.navigate('Home');
             console.log(token);
             console.log(userId);
             // Optionally, you can redirect the user to another page
@@ -93,8 +94,8 @@ const Login = () => {
 
       {confirmation && <Text style={styles.confirmation}>{confirmation}</Text>}
 
-      <TouchableOpacity style={styles.button} onPress={() => navigate.navigate('Home')}>
-        <Text style={styles.textInput}>to Home</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AuthScreen')}>
+        <Text style={styles.textInput}>Register</Text>
       </TouchableOpacity>
     </View>
   );

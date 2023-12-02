@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, Text, View, ActivityIndicator, Image, TouchableOp
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Popup from './Popup.js';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 export default function AboutToWatch() {
@@ -14,21 +15,21 @@ export default function AboutToWatch() {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
 
-  const navigate = useNavigation();
+  const navigation = useNavigation();
 
   const navigateToProfile = () => {
-    navigate.navigate('Profile'); 
+    navigation.navigate('Profile'); 
   };
 
   React.useLayoutEffect(() => {
-    navigate.setOptions({
+    navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity onPress={navigateToProfile} style={{ marginRight: 20 }}>
-          <Text style={{ color: 'black' }}>Profiili</Text>
+          <Ionicons name={ 'person' } size={30}/>
         </TouchableOpacity>
       ),
     });
-  }, [navigate, navigateToProfile]);
+  }, [navigation, navigateToProfile]);
 
   const retrieveToken = async () => {
     try {
@@ -97,7 +98,7 @@ export default function AboutToWatch() {
       }
     } else {
       // Token is not available, handle this case (e.g., redirect to login screen)
-      navigate.navigate('Login');
+      navigation.navigate('Login');
     }
   };
 

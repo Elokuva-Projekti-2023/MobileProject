@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState, React, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Popup from './Popup.js';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 
 export default function Profile() {
@@ -14,7 +16,7 @@ export default function Profile() {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
 
-  const navigate = useNavigation();
+  const navigation = useNavigation();
 
   const retrieveToken = async () => {
     try {
@@ -84,7 +86,7 @@ export default function Profile() {
       }
     } else {
       // Token is not available, handle this case (e.g., redirect to login screen)
-      navigate.navigate('Login');
+      navigation.navigate('Login');
     }
   };
 
@@ -113,10 +115,33 @@ export default function Profile() {
       setOnWatchList([...onWatchList, ...emptyMovies]);
     }
   }, [onWatchList, loading, error]);
+
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('userName');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout}>
+        <Ionicons name={ 'log-out-outline' } size={30} style={{marginRight: 20}}/>
+      </TouchableOpacity>
+      ),
+    });
+  }, [navigation, handleLogout]);
   
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+
 
       <View style={styles.profile}>
               <Image source={ require('../ProfilePicturePlaceholder.png') } style={styles.profileImage} />
