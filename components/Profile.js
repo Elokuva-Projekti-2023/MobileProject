@@ -1,14 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState, React, useCallback } from 'react';
-import { FlatList, StyleSheet, Text, View, ActivityIndicator, Image } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import Popup from './Popup.js';
 
-export default function AboutToWatch() {
-  const [aboutToWatchList, setAboutToWatchList] = useState([]);
+
+export default function Profile() {
+  const [onWatchList, setOnWatchList] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState('');
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
 
   const navigate = useNavigation();
 
@@ -46,7 +50,7 @@ export default function AboutToWatch() {
   
     if (token) {
       try {
-        const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/movie-lists`, {
+        const response = await fetch(`http://192.168.***.***:8080/movielists/${userId}/movie-lists`, {
           headers: {
 
             'Content-Type': 'application/json',
@@ -56,17 +60,18 @@ export default function AboutToWatch() {
         if (response.ok) {
           const data = await response.json();
   
-          if (data.aboutToWatchList) {
-            const aboutToWatch = data.aboutToWatchList.movies || [];
+          if (data.onWatchList) {
+            const watched = data.onWatchList.movies || [];
   
-            if (aboutToWatch.length === 0) {
-              // Handle case where about to watch list is empty
-              setError('About to watch list is empty.');
+            if (watched.length === 0) {
+              // Handle case where favorites list is empty
+              setError('Watched list is empty.');
             } else {
-              setAboutToWatchList(aboutToWatch);
+                const reversedList = watched.reverse();
+              setOnWatchList(reversedList);
             } 
           } else {
-            setError('Invalid response format: aboutToWatchList not found.');
+            setError('Invalid response format: watchedList not found.');
           }
         } else {
           setError(`Error: ${response.status}`);
@@ -87,22 +92,52 @@ export default function AboutToWatch() {
     verifyUser();
   }, []);
   
+  const openPopup = (movie) => {
+    setSelectedMovie(movie);
+  };
 
+  // Funktio sulkee popup-ikkunan
+  const closePopup = () => {
+    setSelectedMovie(null);
+  };
+
+
+  useEffect(() => {
+    if (onWatchList.length < 3 && !loading && !error) {
+      // Lisää tyhjiä objekteja, jotta saadaan täytettyä kolme korttia
+      const emptyMoviesCount = 3 - onWatchList.length;
+      const emptyMovies = Array.from({ length: emptyMoviesCount }, () => ({}));
+      setOnWatchList([...emptyMovies, ...onWatchList]);
+    }
+  }, [onWatchList, loading, error]);
+  
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" /> 
+      <StatusBar style="auto" />
+      
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
         <Text>Error: {error}</Text>
+        
       ) : (
+        <View>
         <FlatList
-          data={aboutToWatchList}
-          keyExtractor={(item) => item.id.toString()} // Assuming id is a unique identifier
+          data={onWatchList}
+          keyExtractor={(item) => item.id} // Assuming id is a unique identifier
           numColumns={3}
           contentContainerStyle={styles.flatListContainer}
+          ListHeaderComponent={
+            <View style={styles.profile}>
+              <Image source={ require('../ProfilePicturePlaceholder.png') } style={styles.profileImage} />
+              <Text style={styles.profileText}>{currentUser}</Text>
+              <Text style={styles.headline}>Watched Movies</Text>
+            </View>
+          }
           renderItem={({ item }) => (
             <View key={item.id} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => openPopup(item)}>
+
               <Image
                 style={styles.image}
                 source={
@@ -116,10 +151,19 @@ export default function AboutToWatch() {
               ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
               : item.title}
               </Text> 
+              </TouchableOpacity>
+
             </View>
           )}
+          
         />
+        </View>
+
       )}
+
+    {selectedMovie && (
+            <Popup visible={true} movie={selectedMovie} onClose={closePopup} />
+    )} 
     </View>
   );
 }
@@ -131,14 +175,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  SearchBarContainer:{
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  searchBar: {
-    flex: 1, // Aseta flex: 1
-  },
+  
   flatListContainer: {
     justifyContent: 'space-between', 
   },
@@ -156,6 +193,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 2,
+    textAlign: 'center',
+  },
+  headline: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 10
+  },
+  profile: {
+    marginTop: 15,
+  },
+  profileImage: {
+    width: 100, 
+    height: 100, 
+    marginBottom:20,
+    alignSelf: 'center'
+  },
+  profileText: {
+    fontSize: 24,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 });

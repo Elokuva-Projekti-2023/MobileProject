@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import Popup from './Popup.js';
 import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
-import { encode as base64 } from 'base-64'; // Import the base-64 library
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -16,19 +15,8 @@ export default function Home() {
   // Use your actual API endpoint with your local network IP address
   const apiUrl ='http://192.168.100.19:8080/api/tmdb/now-playing';
 
-  // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with your actual credentials
-  const username = 'usernameAnna';
-  const password = 'password';
-
-  const base64Credentials = base64(`${username}:${password}`); // Encode credentials as Base64
-
   useEffect(() => {
-    fetch(apiUrl, {
-      headers: {
-        Authorization: `Basic ${base64Credentials}`,
-        // Other headers if required
-      },
-    })
+    fetch(apiUrl)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -37,7 +25,6 @@ export default function Home() {
       })
       .then((data) => {
         if (data && data.length > 0) {
-          //const limitedMovies = data.results.slice(0, 18);
               setMovies(data);
           
         } else {
@@ -50,12 +37,12 @@ export default function Home() {
   }, []);
 
 
-     // Funktio avaa popup-ikkunan valitulle elokuvalle
+     // Function opens popup for the selected movie
   const openPopup = (movie) => {
     setSelectedMovie(movie);
   };
 
-  // Funktio sulkee popup-ikkunan
+  // Function closes popup
   const closePopup = () => {
     setSelectedMovie(null);
   };
@@ -65,11 +52,6 @@ export default function Home() {
       <View style={styles.searchBar}>
       <SearchBar/>
     <View style={styles.container}>
-
-    <Button
-        title="Go to Authentication"
-        onPress={() => navigation.navigate('AuthScreen')}
-      />
       
       <FlatList
           data={movies}
@@ -88,7 +70,7 @@ export default function Home() {
             />
             <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
               {item.title !== item.original_title
-              ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              ? `${item.title} (${item.original_title})` // when origin_title and title are not the same, it shows as "title (original_title)"
               : item.title}
               </Text> 
             </TouchableOpacity>
@@ -120,7 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   searchBar: {
-    flex: 1, // Aseta flex: 1
+    flex: 1, 
   },
   flatListContainer: {
     justifyContent: 'space-between', 

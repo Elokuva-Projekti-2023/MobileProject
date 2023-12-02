@@ -11,6 +11,7 @@ import Login from './components/Login';
 //import dotenv from 'dotenv'
 
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Profile from './components/Profile';
 
 //dotenv.config();
 const Tab = createBottomTabNavigator();
@@ -27,12 +28,14 @@ export default function App() {
             if (route.name === 'Home') {
               iconName = 'md-home';
             } else if (route.name === 'Favourites') {
-              iconName = 'heart';
-            } else if (route.name === 'AboutToWatch') {
+              iconName = 'star';
+            } else if (route.name === 'Watchlist') {
               iconName = 'film'
             } else if (route.name === 'AuthScreen') {
               iconName = 'log-in-outline'
             } else if (route.name === 'Login') {
+              iconName = 'log-in-outline'
+            } else if (route.name === 'Profile') {
               iconName = 'log-in-outline'
             }
 
@@ -42,9 +45,10 @@ export default function App() {
       }>
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Favourites" component={Favourites} />
-        <Tab.Screen name="AboutToWatch" component={AboutToWatch} />
+        <Tab.Screen name="Watchlist" component={AboutToWatch} />
         <Tab.Screen name="AuthScreen" component={AuthScreen} />
         <Tab.Screen name="Login" component={Login} />
+        <Tab.Screen name="Profile" component={Profile} />
       </Tab.Navigator>
     </NavigationContainer>
   )

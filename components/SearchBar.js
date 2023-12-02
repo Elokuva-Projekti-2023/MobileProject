@@ -1,7 +1,6 @@
 import { TextInput, Button, FlatList, StyleSheet, View, StatusBar, Text, Image, TouchableOpacity } from 'react-native';
 import {useState, useEffect} from 'react';
 import Popup from './Popup';
-import { encode as base64 } from 'base-64'; // Import the base-64 library
 import _ from 'lodash';
 
 
@@ -12,20 +11,7 @@ export default function SearchBar() {
 
     
   const fetchSearchedMovies = () => {
-    // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with your actual credentials
-    const username = 'usernameAnna';
-    const password = 'password';
-  
-    // Encode credentials as Base64
-    const base64Credentials = base64(`${username}:${password}`);
-
-    fetch(`http://192.168.***.**:8080/api/tmdb/search/movie?searchTerm=${searchTerm}`, 
-    {
-      headers: {
-        Authorization: `Basic ${base64Credentials}`,
-        // Other headers if required
-      },
-    })
+    fetch(`http://192.168.***.***:8080/api/tmdb/search/movie?searchTerm=${searchTerm}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -48,19 +34,19 @@ export default function SearchBar() {
     });
   };
 
-     // Funktio avaa popup-ikkunan valitulle elokuvalle
-  const openPopup = (movie) => {
+     // Function opens popup for the selected movie
+     const openPopup = (movie) => {
     setSelectedMovie(movie);
   };
     
-  // Funktio sulkee popup-ikkunan
+  // Function closes popup
   const closePopup = () => {
     setSelectedMovie(null);
   };
       
   const handleCancel = () => {
     setSearchTerm('');
-    setMovies([]); // Tyhjennä myös elokuvien lista
+    setMovies([]); // Empties movie list
   };
   
   const delayedFetch = _.debounce(fetchSearchedMovies, 10); 
@@ -73,17 +59,17 @@ export default function SearchBar() {
 
   const calculateMargin = (title, originalTitle) => {
     const combinedTitle = title !== originalTitle ? `${title} (${originalTitle})` : title;
-    const lineBreaks = combinedTitle.split('\n').length; // Tarkista rivinvaihdot
+    const lineBreaks = combinedTitle.split('\n').length; 
   
-    // Tee arvio rivien määrästä perustuen rivinvaihtojen määrään
+    // Line breaks for different amount of rows
     if (lineBreaks > 3) {
       return 4;
     } else if (lineBreaks > 2) {
       return 3;
     } else if (lineBreaks > 1) {
-      return 2; // Arvioitu kahdelle riville
+      return 2; 
     }
-    return 1; // Arvioitu yhdelle riville
+    return 1; 
   };
 
   return (
@@ -98,7 +84,7 @@ export default function SearchBar() {
             fetchSearchedMovies();
           }}
         />
-          {searchTerm.length > 0 && ( // Tarkista, onko hakukenttä tyhjä vai ei
+          {searchTerm.length > 0 && ( // Checks, if the seachbar is empty or not
             <TouchableOpacity onPress={handleCancel} style={styles.transparentButton}>
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
@@ -138,7 +124,7 @@ export default function SearchBar() {
                 ]}
               >
               {item.title !== item.original_title
-                ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+                ? `${item.title} (${item.original_title})` // when origin_title and title are not the same, it shows as "title (original_title)"
                 : item.title} 
               </Text>
             </TouchableOpacity>
@@ -160,12 +146,12 @@ export default function SearchBar() {
 const styles = StyleSheet.create({
     searchBar: {
         position: 'absolute',
-        top: 0, // Kiinnitä yläreunaan
-        left: 0, // Voit käyttää myös 'right' ja 'bottom' tarpeen mukaan
+        top: 0, 
+        left: 0, 
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
-        zIndex: 1, // Varmista, että searchbar on muiden elementtien päällä
+        zIndex: 1, // makes sure that the searchbar is above other elements
         padding: 2,
         marginLeft: 10,
         marginRight: 10,
@@ -173,7 +159,7 @@ const styles = StyleSheet.create({
         borderWidth: 1
       },
     input: {
-      flex: 1, // Take up remaining space
+      flex: 1, 
     },
     image: {
         width: 38,
@@ -195,7 +181,7 @@ const styles = StyleSheet.create({
         left: 45,
     },
     firstMovie: {
-      marginTop: 37, // Lisää ylimääräinen tila ensimmäisen elokuvan yläpuolelle hakupalkin koko
+      marginTop: 37,
     },
     transparentButton: {
       backgroundColor: 'transparent',
