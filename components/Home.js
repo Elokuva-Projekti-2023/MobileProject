@@ -29,6 +29,7 @@ export default function Home() {
     });
   }, [navigate, navigateToProfile]);
 
+
   useEffect(() => {
     fetch(apiUrl)
       .then((response) => {
