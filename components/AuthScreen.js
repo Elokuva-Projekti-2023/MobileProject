@@ -24,7 +24,7 @@ const AuthScreen = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://192.168.***.**:8080/api/auth/register', {
+      const response = await fetch('http://192.168.***.***:8080/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,13 +41,15 @@ const AuthScreen = ({ navigation }) => {
       }
 
       // Additional actions after successful registration and sign-in
-      navigation.navigate('Home'); // Navigate to the home screen
+      navigation.navigate('Login'); // Navigate back to the login screen
     } catch (err) {
       setLoading(false);
       setError(err.message || 'Registration failed');
       console.error('Error during registration:', err);
     }
   };
+
+  
 
   return (
     <View style={styles.container}>
@@ -86,10 +88,6 @@ const AuthScreen = ({ navigation }) => {
         </TouchableOpacity>
       )}
       {error && <Text style={styles.error}>{error}</Text>}
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-         <Text style={styles.textInput}>Go Back to</Text>
-      </TouchableOpacity>
 
     </View>
   );
