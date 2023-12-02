@@ -8,8 +8,11 @@ import AboutToWatch from './components/AboutToWatch';
 import AuthScreen from './components/AuthScreen';
 import Login from './components/Login';
 
+//import dotenv from 'dotenv'
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+//dotenv.config();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
