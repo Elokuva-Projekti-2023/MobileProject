@@ -1,16 +1,34 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState, React, useCallback } from 'react';
-import { FlatList, StyleSheet, Text, View, ActivityIndicator, Image } from 'react-native';
+import React,{ useEffect, useState, useCallback } from 'react';
+import { FlatList, StyleSheet, Text, View, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import Popup from './Popup.js';
+
 
 export default function AboutToWatch() {
   const [aboutToWatchList, setAboutToWatchList] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState('');
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
 
   const navigate = useNavigation();
+
+  const navigateToProfile = () => {
+    navigate.navigate('Profile'); 
+  };
+
+  React.useLayoutEffect(() => {
+    navigate.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={navigateToProfile} style={{ marginRight: 20 }}>
+          <Text style={{ color: 'black' }}>Profiili</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigate, navigateToProfile]);
 
   const retrieveToken = async () => {
     try {
@@ -46,7 +64,7 @@ export default function AboutToWatch() {
   
     if (token) {
       try {
-        const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/movie-lists`, {
+        const response = await fetch(`http://192.168.***.***:8080/movielists/${userId}/movie-lists`, {
           headers: {
 
             'Content-Type': 'application/json',
@@ -61,7 +79,7 @@ export default function AboutToWatch() {
   
             if (aboutToWatch.length === 0) {
               // Handle case where about to watch list is empty
-              setError('About to watch list is empty.');
+              setError('About to watch list is empty');
             } else {
               setAboutToWatchList(aboutToWatch);
             } 
@@ -87,6 +105,25 @@ export default function AboutToWatch() {
     verifyUser();
   }, []);
   
+  // Function opens popup for the selected movie
+  const openPopup = (movie) => {
+    setSelectedMovie(movie);
+  };
+
+  // Function closes popup
+  const closePopup = () => {
+    setSelectedMovie(null);
+  };
+
+
+  useEffect(() => {
+    if (aboutToWatchList.length < 3 && !loading && !error) {
+      // Adds empty objects to get movie mockups
+      const emptyMoviesCount = 3 - aboutToWatchList.length;
+      const emptyMovies = Array.from({ length: emptyMoviesCount }, () => ({}));
+      setAboutToWatchList([...aboutToWatchList, ...emptyMovies]);
+    }
+  }, [aboutToWatchList, loading, error]);
 
   return (
     <View style={styles.container}>
@@ -94,15 +131,20 @@ export default function AboutToWatch() {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
-        <Text>Error: {error}</Text>
+        <Text>{error}</Text>
       ) : (
+        <View>
         <FlatList
           data={aboutToWatchList}
-          keyExtractor={(item) => item.id.toString()} // Assuming id is a unique identifier
+          keyExtractor={(item) => item.id} // Assuming id is a unique identifier
           numColumns={3}
           contentContainerStyle={styles.flatListContainer}
           renderItem={({ item }) => (
             <View key={item.id} style={styles.itemContainer}>
+               {(item.poster_path && item.poster_path !== null) ? (
+
+              <TouchableOpacity onPress={() => openPopup(item)}>
+
               <Image
                 style={styles.image}
                 source={
@@ -113,16 +155,29 @@ export default function AboutToWatch() {
               />
               <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
               {item.title !== item.original_title
-              ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              ? `${item.title} (${item.original_title})` // when origin_title and title are not the same, it shows as "title (original_title)"
               : item.title}
               </Text> 
-            </View>
+              </TouchableOpacity>
+              ) : (
+                // Shows the empty objects as invisible and unpressable
+                <View style={{ width: 113, height: 170 }} />
+              )}
+              </View>
           )}
+          
         />
+        </View>
+
       )}
+
+    {selectedMovie && (
+            <Popup visible={true} movie={selectedMovie} onClose={closePopup} />
+    )} 
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -137,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   searchBar: {
-    flex: 1, // Aseta flex: 1
+    flex: 1, 
   },
   flatListContainer: {
     justifyContent: 'space-between', 

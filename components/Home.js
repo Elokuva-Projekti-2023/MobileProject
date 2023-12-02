@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import Popup from './Popup.js';
 import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
@@ -10,10 +10,24 @@ export default function Home() {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  const navigation = useNavigation();
+  const navigate = useNavigation();
 
   // Use your actual API endpoint with your local network IP address
-  const apiUrl = 'http://192.168.***.**:8080/api/tmdb/now-playing';
+  const apiUrl = 'http://192.168.***.***:8080/api/tmdb/now-playing';
+
+  const navigateToProfile = () => {
+    navigate.navigate('Profile'); 
+  };
+
+  React.useLayoutEffect(() => {
+    navigate.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={navigateToProfile} style={{ marginRight: 20 }}>
+          <Text style={{ color: 'black' }}>Profiili</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigate, navigateToProfile]);
 
   useEffect(() => {
     fetch(apiUrl)
