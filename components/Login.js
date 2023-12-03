@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth} from './Firebase';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +13,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [confirmation, setConfirmation] = useState('');
 
+  const auth = getAuth();
   const navigation = useNavigation();
 
   const handleLogin = async () => {
@@ -20,12 +24,14 @@ const Login = () => {
     setLoading(true);
   
     try {
+        await signInWithEmailAndPassword(auth, email, password);
+
         const response = await fetch('http://192.168.***.***:8080/api/auth/signin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email}),
         });
       
         const data = await response.json();
