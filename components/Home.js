@@ -1,9 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import Popup from './Popup.js';
 import { StyleSheet, View, FlatList, Image, Text, TouchableOpacity, Button } from 'react-native';
 import SearchBar from './SearchBar.js';
 import { useNavigation } from '@react-navigation/native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 export default function Home() {
@@ -13,7 +14,29 @@ export default function Home() {
   const navigation = useNavigation();
 
   // Use your actual API endpoint with your local network IP address
-  const apiUrl ='http://192.168.***.**:8080/api/tmdb/now-playing';
+  const apiUrl = 'http://192.168.***.***:8080/api/tmdb/now-playing';
+
+  const isLoggedIn = true; 
+
+  const navigateToProfile = () => {
+    if (isLoggedIn) {
+      navigation.navigate('Profile');
+    } else {
+      navigation.navigate('Login');
+    }
+  };
+
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={navigateToProfile} style={{ marginRight: 20 }}>
+          <Ionicons name={ 'person' } size={30}/>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, navigateToProfile]);
+
 
   useEffect(() => {
     fetch(apiUrl)

@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState, React, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Popup from './Popup.js';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 
 export default function Profile() {
@@ -14,7 +16,7 @@ export default function Profile() {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
 
-  const navigate = useNavigation();
+  const navigation = useNavigation();
 
   const retrieveToken = async () => {
     try {
@@ -64,8 +66,8 @@ export default function Profile() {
             const watched = data.onWatchList.movies || [];
   
             if (watched.length === 0) {
-              // Handle case where favorites list is empty
-              setError('Watched list is empty.');
+              // Handle case where watched list is empty
+              setOnWatchList([]);
             } else {
                 const reversedList = watched.reverse();
               setOnWatchList(reversedList);
@@ -84,7 +86,7 @@ export default function Profile() {
       }
     } else {
       // Token is not available, handle this case (e.g., redirect to login screen)
-      navigate.navigate('Login');
+      navigation.navigate('Login');
     }
   };
 
@@ -92,50 +94,80 @@ export default function Profile() {
     verifyUser();
   }, []);
   
+   // Function opens popup for the selected movie
   const openPopup = (movie) => {
     setSelectedMovie(movie);
   };
 
-  // Funktio sulkee popup-ikkunan
+  // Function closes popup
   const closePopup = () => {
     setSelectedMovie(null);
   };
 
 
   useEffect(() => {
-    if (onWatchList.length < 3 && !loading && !error) {
-      // Lisää tyhjiä objekteja, jotta saadaan täytettyä kolme korttia
+    if (onWatchList.length === 0 && !loading && !error) {
+      setError('Watched list is empty');
+    } else if (onWatchList.length < 3 && !loading && !error) {
+      // Adds empty objects to get movie mockups
       const emptyMoviesCount = 3 - onWatchList.length;
       const emptyMovies = Array.from({ length: emptyMoviesCount }, () => ({}));
-      setOnWatchList([...emptyMovies, ...onWatchList]);
+      setOnWatchList([...onWatchList, ...emptyMovies]);
     }
   }, [onWatchList, loading, error]);
+
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('userName');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout}>
+        <Ionicons name={ 'log-out-outline' } size={30} style={{marginRight: 20}}/>
+      </TouchableOpacity>
+      ),
+    });
+  }, [navigation, handleLogout]);
   
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+
+
+      <View style={styles.profile}>
+              <Image source={ require('../ProfilePicturePlaceholder.png') } style={styles.profileImage} />
+              <Text style={styles.profileText}>{currentUser}</Text>
+              <Text style={styles.headline}>Watched Movies</Text>
+      </View>
+
+      <View style={styles.line} />
       
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
-      ) : error ? (
-        <Text>Error: {error}</Text>
+        ) : (
         
-      ) : (
-        <View>
         <FlatList
           data={onWatchList}
           keyExtractor={(item) => item.id} // Assuming id is a unique identifier
           numColumns={3}
           contentContainerStyle={styles.flatListContainer}
-          ListHeaderComponent={
-            <View style={styles.profile}>
-              <Image source={ require('../ProfilePicturePlaceholder.png') } style={styles.profileImage} />
-              <Text style={styles.profileText}>{currentUser}</Text>
-              <Text style={styles.headline}>Watched Movies</Text>
-            </View>
+          ListEmptyComponent={
+            <Text style={styles.emptyListText}>{error || 'Watched list is empty'}</Text>
           }
+          
           renderItem={({ item }) => (
             <View key={item.id} style={styles.itemContainer}>
+            {(item.poster_path && item.poster_path !== null) ? (
+
             <TouchableOpacity onPress={() => openPopup(item)}>
 
               <Image
@@ -148,16 +180,18 @@ export default function Profile() {
               />
               <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
               {item.title !== item.original_title
-              ? `${item.title} (${item.original_title})` //kun origin_title ja title ei ole sama, näkyy original_title (title)
+              ? `${item.title} (${item.original_title})` // when origin_title and title are not the same, it shows as "title (original_title)"
               : item.title}
               </Text> 
               </TouchableOpacity>
-
+              ) : (
+                // Shows the empty objects as invisible and unpressable
+                <View style={{ width: 113, height: 170 }} />
+              )}
             </View>
           )}
           
         />
-        </View>
 
       )}
 
@@ -199,7 +233,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 10
+    marginTop: 10,
+    marginBottom: 5
   },
   profile: {
     marginTop: 15,
@@ -214,6 +249,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  emptyListText: {
+    marginTop: '140%'
+  },
+  line: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'gray', 
+    width: '90%', 
   },
 });
 

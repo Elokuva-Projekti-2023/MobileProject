@@ -235,6 +235,12 @@ export default function Popup({ visible, movie, onClose }) {
   
     fetchMovieStates();
   }, []);
+
+  const releaseDate = new Date(movie.release_date).toLocaleDateString('en-FI', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
   
 
   return (
@@ -261,7 +267,7 @@ export default function Popup({ visible, movie, onClose }) {
           </View>
           <Text style={styles.title_text}>
             {movie.title !== movie.original_title
-              ? `${movie.title} (${movie.original_title})` //kun origin_title ja title ei ole sama, näkyy title (original_title)
+              ? `${movie.title} (${movie.original_title})` // when origin_title and title are not the same, it shows as "title (original_title)"
               : movie.title}  
           </Text>
 
@@ -288,9 +294,8 @@ export default function Popup({ visible, movie, onClose }) {
           </View>
 
           <ScrollView style={styles.overviewContainer}>
-          <Text style={{ color: 'white', marginBottom: 10}}>Release Date: {movie.release_date}</Text>
+          <Text style={{ color: 'white', marginBottom: 10, alignSelf: 'center'}}>{releaseDate}</Text>
           <Text style={{ color: 'white'}}>{movie.overview}</Text>
-          <Text style={{ color: 'white'}}>{movie.id}</Text>
 
           </ScrollView>
         </View>
@@ -302,10 +307,9 @@ export default function Popup({ visible, movie, onClose }) {
 
 const styles = StyleSheet.create({
     popupContainer: {
-      backgroundColor: 'rgba(40, 40, 40, 0.96)',
+      backgroundColor: 'rgba(40, 40, 40, 0.99)',
       padding: 20,
-      borderRadius: 10,
-      height: Dimensions.get('window').height *0.84, // Koko näytön korkeuden mukaan, voit säätää tarvittaessa
+      height: Dimensions.get('window').height *0.87, 
       width: Dimensions.get('window').width,
       justifyContent: 'center',
       alignItems: 'center',
@@ -314,9 +318,9 @@ const styles = StyleSheet.create({
       width: 113,
       height: 170,
       borderRadius: 5,
-      position: 'absolute', // Lisätty kuvan sijainnin määrittely
-      top: 50, // Siirretään yläkulmaan
-      left: 15, // Siirretään vasempaan kulmaan
+      position: 'absolute', 
+      top: 50,
+      left: 15, 
     },
     closeButton: {
       position: 'absolute',
@@ -331,7 +335,7 @@ const styles = StyleSheet.create({
       position: 'absolute',
       top: 50,
       left: Dimensions.get('window').width * 0.4,
-      maxWidth: Dimensions.get('window').width / 2, // Maksimileveys puoleenväliin näyttöä
+      maxWidth: Dimensions.get('window').width / 2, 
       height: Dimensions.get('window').height / 2,
       color: 'white',
     },
@@ -363,7 +367,7 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       marginBottom: 20,
       position: 'absolute',
-      maxHeight: Dimensions.get('window').height * 0.4, // Lisätty maxHeight-rajoitus
+      maxHeight: Dimensions.get('window').height * 0.4, 
     },
   });
   
