@@ -52,7 +52,7 @@ export default function Profile() {
   
     if (token) {
       try {
-        const response = await fetch(`http://192.168.***.***:8080/movielists/${userId}/movie-lists`, {
+        const response = await fetch(`http://192.168.***.**:8080/movielists/${userId}/movie-lists`, {
           headers: {
 
             'Content-Type': 'application/json',
